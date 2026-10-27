@@ -8,7 +8,7 @@ definitions:
         minimum: 1
         type: integer
       name:
-        example: Sanly Ortiz
+        example: Nombre Apellido
         type: string
     type: object
   ConfirmationResponse:
@@ -23,7 +23,7 @@ definitions:
         example: 8cf95ed5-1e97-4386-a331-73a1ab7bea9e
         type: string
       name:
-        example: Sanly Ortiz
+        example: Nombre Apellido
         type: string
       updatedAt:
         example: "2026-11-21T09:30:00Z"

@@ -231,7 +231,7 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string",
-                    "example": "Sanly Ortiz"
+                    "example": "Nombre Apellido"
                 }
             }
         },
@@ -252,7 +252,7 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string",
-                    "example": "Sanly Ortiz"
+                    "example": "Nombre Apellido"
                 },
                 "updatedAt": {
                     "type": "string",

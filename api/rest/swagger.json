@@ -229,7 +229,7 @@
                 },
                 "name": {
                     "type": "string",
-                    "example": "Sanly Ortiz"
+                    "example": "Nombre Apellido"
                 }
             }
         },
@@ -250,7 +250,7 @@
                 },
                 "name": {
                     "type": "string",
-                    "example": "Sanly Ortiz"
+                    "example": "Nombre Apellido"
                 },
                 "updatedAt": {
                     "type": "string",
