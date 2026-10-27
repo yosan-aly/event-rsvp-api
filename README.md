@@ -52,7 +52,8 @@ Base: `/api/v1`. Los errores siempre tienen la forma
 - `attendees` incluye a quien confirma y va de 1 a 7. Los nombres pueden repetirse.
 - El `id` que devuelve la confirmación es un UUID que solo conoce el navegador del invitado:
   es lo que le permite actualizar su confirmación sin necesidad de login.
-- Las rutas de admin requieren el header `X-Admin-Token`; en la página es el "código de
+- Las rutas de admin requieren el header `X-Admin-Token` y admiten como máximo 10 intentos
+  **fallidos** por minuto por IP (el código puede ser sencillo sin que se pueda adivinar); en la página es el "código de
   acceso" de la pestaña de invitados. Si `ADMIN_TOKEN` no está definido, responden 404.
 
 ### Swagger y Postman
@@ -98,6 +99,7 @@ instancias migren a la vez.
 | `ALLOWED_ORIGINS` | sí | Orígenes CORS separados por comas |
 | `ADMIN_TOKEN` | no | Código de acceso al listado de invitados |
 | `WRITE_RATE_LIMIT` | no | Confirmaciones por minuto por IP (por defecto 10) |
+| `ADMIN_RATE_LIMIT` | no | Intentos fallidos con el código de acceso por minuto por IP (por defecto 10) |
 | `SERVICE_PORT` / `PORT` | no | Puerto HTTP (por defecto 8080) |
 | `SERVICE_WITH_OPEN_API` | no | `true` publica Swagger UI en `/swagger` |
 | `LOG_LEVEL` | no | `debug`, `info`, `warn` o `error` |

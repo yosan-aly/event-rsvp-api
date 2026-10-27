@@ -59,24 +59,28 @@ func New(cfg config.Config, svc attendancerest.AttendanceService, log *slog.Logg
 	}
 
 	attendance := attendancerest.NewHandler(svc)
-	writeLimit := writeLimiter(cfg.WriteRateLimit)
+	writeLimit := rateLimiter(cfg.WriteRateLimit, false)
 
 	api := app.Group("/api/v1")
 	api.Post("/attendance-confirmations", writeLimit, attendance.Confirm)
 	api.Put("/attendance-confirmations/:id", writeLimit, attendance.Update)
 
-	admin := api.Group("/admin", adminAuth(cfg.AdminToken))
+	// El límite va antes de la autenticación y solo cuenta los intentos fallidos:
+	// quien adivina el código queda frenado, quien lo tiene no se ve afectado.
+	admin := api.Group("/admin", rateLimiter(cfg.AdminRateLimit, true), adminAuth(cfg.AdminToken))
 	admin.Get("/attendance-confirmations", attendance.Summary)
 	admin.Delete("/attendance-confirmations/:id", attendance.Delete)
 
 	return app
 }
 
-// writeLimiter evita que un script llene la lista de confirmaciones falsas.
-func writeLimiter(perMinute int) fiber.Handler {
+// rateLimiter limita las peticiones por minuto por IP. Con onlyFailures solo
+// cuenta las respuestas con error (por ejemplo, un código de acceso incorrecto).
+func rateLimiter(perMinute int, onlyFailures bool) fiber.Handler {
 	return limiter.New(limiter.Config{
-		Max:        perMinute,
-		Expiration: time.Minute,
+		Max:                    perMinute,
+		Expiration:             time.Minute,
+		SkipSuccessfulRequests: onlyFailures,
 		LimitReached: func(c *fiber.Ctx) error {
 			return httperr.Write(c, fiber.StatusTooManyRequests, "TOO_MANY_REQUESTS",
 				"Demasiados intentos. Espera un minuto e inténtalo de nuevo.")

@@ -21,6 +21,9 @@ type Config struct {
 	AdminToken string
 	// WriteRateLimit es el máximo de confirmaciones (crear o actualizar) por minuto por IP.
 	WriteRateLimit int
+	// AdminRateLimit es el máximo de intentos fallidos con el código de acceso
+	// por minuto por IP; frena a quien intente adivinarlo.
+	AdminRateLimit int
 	// WithOpenAPI publica Swagger UI en /swagger (solo para desarrollo).
 	WithOpenAPI bool
 	LogLevel    slog.Level
@@ -87,11 +90,13 @@ func Load() (Config, error) {
 		return Config{}, errors.New("DB_SCHEMAS debe ser un solo schema en minúsculas (letras, números y _)")
 	}
 
-	limit, err := strconv.Atoi(getEnv("WRITE_RATE_LIMIT", "10"))
-	if err != nil || limit < 1 {
-		return Config{}, errors.New("WRITE_RATE_LIMIT debe ser un entero mayor que 0")
+	var err error
+	if cfg.WriteRateLimit, err = positiveInt("WRITE_RATE_LIMIT", "10"); err != nil {
+		return Config{}, err
 	}
-	cfg.WriteRateLimit = limit
+	if cfg.AdminRateLimit, err = positiveInt("ADMIN_RATE_LIMIT", "10"); err != nil {
+		return Config{}, err
+	}
 
 	if cfg.WithOpenAPI, err = strconv.ParseBool(getEnv("SERVICE_WITH_OPEN_API", "false")); err != nil {
 		return Config{}, errors.New("SERVICE_WITH_OPEN_API debe ser true o false")
@@ -102,6 +107,14 @@ func Load() (Config, error) {
 	}
 
 	return cfg, nil
+}
+
+func positiveInt(key, fallback string) (int, error) {
+	n, err := strconv.Atoi(getEnv(key, fallback))
+	if err != nil || n < 1 {
+		return 0, fmt.Errorf("%s debe ser un entero mayor que 0", key)
+	}
+	return n, nil
 }
 
 func getEnv(key, fallback string) string {
