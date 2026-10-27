@@ -37,7 +37,7 @@ substitutions:
   _TAG: manual
   _RUN_SA: event-rsvp-runtime@${PROJECT_ID}.iam.gserviceaccount.com
   # ^@^ cambia el separador a "@" porque ALLOWED_ORIGINS lleva comas
-  _ENV_VARS: ^@^DB_ADDR=ep-calm-credit-b7i08sm4.c-13.us-east-1.aws.neon.tech:5432@DB_DATABASE=event_rsvp@DB_SCHEMAS=event_rsvp@DB_USER=event_rsvp_app@ALLOWED_ORIGINS=https://event-rsvp.vercel.app
+  _ENV_VARS: ^@^DB_ADDR=ep-calm-credit-b7i08sm4.c-13.us-east-1.aws.neon.tech:5432@DB_DATABASE=event_rsvp@DB_SCHEMAS=event_rsvp@DB_USER=event_rsvp_app@ALLOWED_ORIGINS=https://boda-ludibia-gildardo.vercel.app,https://event-rsvp-wedding.vercel.app
   _SECRETS: DB_PASSWORD=event-rsvp-db-password:latest,ADMIN_TOKEN=event-rsvp-admin-token:latest
 
 options:
